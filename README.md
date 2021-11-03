@@ -1,2 +1,4 @@
-# otel-workshop-go-instructor
-A tool used to demonstrate basic  OTel functionality and serve as a teaching tool. This is the instructor copy with all instrumentation completed
+# otel-workshop-go
+The base image for work on the OTel workshop. This will be used to demonstrate the basics and work through instrumentation steps. Slides can be found here:
+
+https://docs.google.com/presentation/d/1m5NqQx_Z7R92Ri3poNq-QWSh54AB6M28zmQRH0xKmEg/edit?usp=sharing
