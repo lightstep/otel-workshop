@@ -18,8 +18,9 @@ func main() {
 	mux.Handle("/favicon.ico", http.NotFoundHandler())
 	mux.Handle("/fib", http.HandlerFunc(fibHandler))
 	mux.Handle("/fibinternal", http.HandlerFunc(fibHandler))
-	// mux.Handle("/metrics", prom)
 	os.Stderr.WriteString("Initializing the server...\n")
+
+	// go updateDiskMetrics(context.Background())
 
 	err := http.ListenAndServe("127.0.0.1:3000", mux)
 	if err != nil {
@@ -95,6 +96,47 @@ func fibHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	fmt.Fprintf(w, "%d", ret)
 }
+
+// func updateDiskMetrics(ctx context.Context) {
+// 	appKey := attribute.Key("fib")
+// 	containerKey := attribute.Key(os.Getenv("HOSTNAME"))
+
+// 	meter := mglobal.Meter("container")
+// 	mem, _ := meter.NewInt64Counter("mem_usage",
+// 		metric.WithDescription("Amount of memory used."),
+// 	)
+// 	used, _ := meter.NewFloat64Counter("disk_usage",
+// 		metric.WithDescription("Amount of disk used."),
+// 	)
+// 	quota, _ := meter.NewFloat64Counter("disk_quota",
+// 		metric.WithDescription("Amount of disk quota available."),
+// 	)
+// 	goroutines, _ := meter.NewInt64Counter("num_goroutines",
+// 		metric.WithDescription("Amount of goroutines running."),
+// 	)
+
+// 	var m runtime.MemStats
+// 	for {
+// 		runtime.ReadMemStats(&m)
+
+// 		var stat syscall.Statfs_t
+// 		wd, _ := os.Getwd()
+// 		syscall.Statfs(wd, &stat)
+
+// 		all := float64(stat.Blocks) * float64(stat.Bsize)
+// 		free := float64(stat.Bfree) * float64(stat.Bsize)
+
+// 		meter.RecordBatch(ctx, []attribute.KeyValue{
+// 			appKey.String(os.Getenv("PROJECT_DOMAIN")),
+// 			containerKey.String(os.Getenv("HOSTNAME"))},
+// 			used.Measurement(all-free),
+// 			quota.Measurement(all),
+// 			mem.Measurement(int64(m.Sys)),
+// 			goroutines.Measurement(int64(runtime.NumGoroutine())),
+// 		)
+// 		time.Sleep(time.Minute)
+// 	}
+// }
 
 func dbHandler(color string) int {
 	// Pretend we talked to a database here.
